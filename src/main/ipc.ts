@@ -4,9 +4,11 @@ import {
   METRICS_UPDATE,
   SESSIONS_LIST,
   SESSIONS_UPDATE,
-  SESSION_KILL
+  SESSION_KILL,
+  SESSION_SET_DISMISSED
 } from '../shared/ipc'
 import { isClaudePid } from './sessions/processes'
+import type { DismissedStore } from './sessions/dismissed'
 import type { SessionStore } from './sessions/store'
 import type { SystemMetricsService } from './system/metrics'
 
@@ -16,9 +18,17 @@ function broadcast(channel: string, payload: unknown): void {
   }
 }
 
-export function registerSessionIpc(store: SessionStore): void {
+export function registerSessionIpc(store: SessionStore, dismissed: DismissedStore): void {
   ipcMain.handle(SESSIONS_LIST, () => store.getCards())
   store.on('cards', (cards) => broadcast(SESSIONS_UPDATE, cards))
+
+  ipcMain.handle(
+    SESSION_SET_DISMISSED,
+    (_event, payload: { sessionId: string; dismissed: boolean }) => {
+      dismissed.set(payload.sessionId, payload.dismissed)
+      store.requestEmit()
+    }
+  )
 
   ipcMain.handle(SESSION_KILL, async (event, payload: { pid: number; label: string }) => {
     const win = BrowserWindow.fromWebContents(event.sender)

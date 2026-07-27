@@ -67,4 +67,6 @@ export interface SessionCardData {
   context: ContextInfo | null
   subagents: SubagentInfo
   process: ProcessInfo | null
+  /** 사용자가 보드에서 닫은(추적 제외) 세션 */
+  dismissed: boolean
 }

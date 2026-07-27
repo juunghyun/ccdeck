@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'node:path'
+import { DismissedStore } from './sessions/dismissed'
 import { SessionStore } from './sessions/store'
 import { SystemMetricsService } from './system/metrics'
 import { registerMetricsIpc, registerSessionIpc } from './ipc'
@@ -25,7 +26,11 @@ const store = new SessionStore()
 const metrics = new SystemMetricsService(() => store.claudeTotals())
 
 app.whenReady().then(() => {
-  registerSessionIpc(store)
+  const dismissed = new DismissedStore(path.join(app.getPath('userData'), 'dismissed.json'))
+  dismissed.load()
+  store.setDismissedProvider(dismissed)
+
+  registerSessionIpc(store, dismissed)
   registerMetricsIpc(metrics)
   store.start().catch((err) => console.error('[ccdeck] session store failed to start:', err))
   metrics.start()

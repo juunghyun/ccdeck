@@ -122,6 +122,7 @@ function toCard(
       active: subagents.length,
       names: subagents.map((t) => t.description ?? t.name)
     },
-    process: proc ? { pid: proc.pid, rssBytes: proc.rssBytes, shared } : null
+    process: proc ? { pid: proc.pid, rssBytes: proc.rssBytes, shared } : null,
+    dismissed: false
   }
 }

@@ -24,6 +24,7 @@ function card(overrides: Partial<SessionCardData>): SessionCardData {
     context: null,
     subagents: { active: 0, names: [] },
     process: null,
+    dismissed: false,
     ...overrides
   }
 }

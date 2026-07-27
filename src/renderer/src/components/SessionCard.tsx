@@ -18,7 +18,9 @@ const REASON_LABEL: Record<AttentionReason, string> = {
 export function SessionCard({ card, now }: { card: SessionCardData; now: number }) {
   const aging = agingLevel(card, now)
   return (
-    <article className={`session-card status-${card.status} aging-${aging}`}>
+    <article
+      className={`session-card status-${card.status} aging-${aging}${card.dismissed ? ' dismissed' : ''}`}
+    >
       <div className="card-top">
         <span className="project" title={card.cwd}>
           {card.projectName}
@@ -28,20 +30,39 @@ export function SessionCard({ card, now }: { card: SessionCardData; now: number 
             {card.gitBranch}
           </span>
         )}
-        {card.process && (
-          <button
-            className="kill-btn"
-            title="claude 프로세스 종료 (확인 후 진행)"
-            onClick={() =>
-              void window.ccdeck.killSession(
-                card.process!.pid,
-                `${card.projectName} — ${card.title ?? card.firstPrompt ?? card.sessionId.slice(0, 8)}`
-              )
-            }
-          >
-            종료
-          </button>
-        )}
+        <span className="card-actions">
+          {card.process && !card.dismissed && (
+            <button
+              className="kill-btn"
+              title="claude 프로세스 종료 (확인 후 진행)"
+              onClick={() =>
+                void window.ccdeck.killSession(
+                  card.process!.pid,
+                  `${card.projectName} — ${card.title ?? card.firstPrompt ?? card.sessionId.slice(0, 8)}`
+                )
+              }
+            >
+              종료
+            </button>
+          )}
+          {card.dismissed ? (
+            <button
+              className="close-btn"
+              title="다시 보드에 표시"
+              onClick={() => void window.ccdeck.setDismissed(card.sessionId, false)}
+            >
+              복원
+            </button>
+          ) : (
+            <button
+              className="close-btn"
+              title="보드에서 숨기기 (프로세스는 그대로 둠)"
+              onClick={() => void window.ccdeck.setDismissed(card.sessionId, true)}
+            >
+              ✕
+            </button>
+          )}
+        </span>
       </div>
 
       <h3 className="card-title" title={card.firstPrompt ?? undefined}>

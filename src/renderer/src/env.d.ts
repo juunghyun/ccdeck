@@ -10,6 +10,7 @@ declare global {
       getSystemMetrics(): Promise<SystemMetrics | null>
       onSystemMetricsUpdate(callback: (metrics: SystemMetrics) => void): () => void
       killSession(pid: number, label: string): Promise<{ killed: boolean; reason?: string }>
+      setDismissed(sessionId: string, dismissed: boolean): Promise<void>
     }
   }
 }

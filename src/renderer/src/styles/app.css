@@ -160,8 +160,54 @@ body {
   white-space: nowrap;
 }
 
-.kill-btn {
+.card-actions {
   margin-left: auto;
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.close-btn {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background: var(--slate-100);
+  color: var(--text-2);
+}
+
+.session-card.dismissed {
+  opacity: 0.5;
+  border-left-style: dashed;
+}
+
+.hidden-toggle {
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.hidden-toggle:hover,
+.hidden-toggle.active {
+  background: var(--slate-100);
+}
+
+.kill-btn {
   flex-shrink: 0;
   font-family: var(--font-sans);
   font-size: 11px;

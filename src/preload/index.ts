@@ -4,7 +4,8 @@ import {
   METRICS_UPDATE,
   SESSIONS_LIST,
   SESSIONS_UPDATE,
-  SESSION_KILL
+  SESSION_KILL,
+  SESSION_SET_DISMISSED
 } from '../shared/ipc'
 
 function subscribe(channel: string, callback: (payload: unknown) => void): () => void {
@@ -22,5 +23,7 @@ contextBridge.exposeInMainWorld('ccdeck', {
   getSystemMetrics: () => ipcRenderer.invoke(METRICS_GET),
   onSystemMetricsUpdate: (callback: (metrics: unknown) => void) =>
     subscribe(METRICS_UPDATE, callback),
-  killSession: (pid: number, label: string) => ipcRenderer.invoke(SESSION_KILL, { pid, label })
+  killSession: (pid: number, label: string) => ipcRenderer.invoke(SESSION_KILL, { pid, label }),
+  setDismissed: (sessionId: string, dismissed: boolean) =>
+    ipcRenderer.invoke(SESSION_SET_DISMISSED, { sessionId, dismissed })
 })

@@ -29,8 +29,19 @@ export class SessionStore extends EventEmitter {
   private pollTimer: ReturnType<typeof setInterval> | null = null
   private emitTimer: ReturnType<typeof setTimeout> | null = null
 
+  private dismissedProvider: { has(sessionId: string): boolean } | null = null
+
   constructor(private readonly root = path.join(os.homedir(), '.claude', 'projects')) {
     super()
+  }
+
+  setDismissedProvider(provider: { has(sessionId: string): boolean }): void {
+    this.dismissedProvider = provider
+  }
+
+  /** 외부 상태 변화(숨김 토글 등) 후 카드 재방출 요청 */
+  requestEmit(): void {
+    this.scheduleEmit()
   }
 
   async start(): Promise<void> {
@@ -62,7 +73,11 @@ export class SessionStore extends EventEmitter {
       filePath,
       snap: entry.acc.snapshot()
     }))
-    return buildCards(sources, this.procs, now)
+    const cards = buildCards(sources, this.procs, now)
+    if (!this.dismissedProvider) return cards
+    return cards.map((card) =>
+      this.dismissedProvider!.has(card.sessionId) ? { ...card, dismissed: true } : card
+    )
   }
 
   /** kill 등 외부 변화 직후 프로세스 목록 즉시 재수집 */
