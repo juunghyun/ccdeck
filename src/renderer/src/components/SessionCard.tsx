@@ -1,5 +1,6 @@
 import type { AttentionReason, SessionCardData } from '../../../shared/types'
 import { formatDuration, formatRss, formatTokens, shortModel, timeAgo } from '../format'
+import { agingLevel } from '../ordering'
 
 function contextTone(percent: number): 'ok' | 'warn' | 'danger' {
   if (percent >= 90) return 'danger'
@@ -15,8 +16,9 @@ const REASON_LABEL: Record<AttentionReason, string> = {
 }
 
 export function SessionCard({ card, now }: { card: SessionCardData; now: number }) {
+  const aging = agingLevel(card, now)
   return (
-    <article className={`session-card status-${card.status}`}>
+    <article className={`session-card status-${card.status} aging-${aging}`}>
       <div className="card-top">
         <span className="project" title={card.cwd}>
           {card.projectName}

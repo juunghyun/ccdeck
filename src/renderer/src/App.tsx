@@ -4,6 +4,7 @@ import { StatusBar } from './components/StatusBar'
 import { useNow } from './hooks/useNow'
 import { useSessions } from './hooks/useSessions'
 import { useSystemMetrics } from './hooks/useSystemMetrics'
+import { orderColumn } from './ordering'
 
 const COLUMNS: Array<{ id: SessionStatus; title: string }> = [
   { id: 'running', title: '실행중' },
@@ -28,7 +29,7 @@ export default function App() {
       </header>
       <main className="columns">
         {COLUMNS.map((col) => {
-          const list = cards.filter((c) => c.status === col.id)
+          const list = orderColumn(cards, col.id)
           return (
             <section key={col.id} className={`column column-${col.id}`}>
               <h2>

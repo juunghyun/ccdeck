@@ -282,6 +282,21 @@ body {
   opacity: 0.75;
 }
 
+/* ---- Aging (확인필요 방치) — 라벨의 대기시간 텍스트와 함께 강조 ---- */
+.session-card.aging-warm {
+  border-left-width: 4px;
+}
+
+.session-card.aging-hot {
+  border-left-width: 4px;
+  border-left-color: var(--danger);
+}
+
+.session-card.aging-hot .status-label.attention {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
 /* ---- Status bar (시스템 메트릭) ---- */
 .status-bar {
   display: flex;
