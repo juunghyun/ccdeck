@@ -5,7 +5,26 @@ import { StatusBar } from './components/StatusBar'
 import { useNow } from './hooks/useNow'
 import { useSessions } from './hooks/useSessions'
 import { useSystemMetrics } from './hooks/useSystemMetrics'
-import { orderColumn } from './ordering'
+import { DEFAULT_SORT, SORT_OPTIONS, orderColumn, type SortKey } from './ordering'
+
+const SORT_STORAGE_KEY = 'ccdeck:sort:v1'
+
+function loadSort(): Record<SessionStatus, SortKey> {
+  try {
+    const raw = JSON.parse(localStorage.getItem(SORT_STORAGE_KEY) ?? '{}') as Record<
+      string,
+      string
+    >
+    const valid = new Set(SORT_OPTIONS.map((o) => o.value))
+    const result = { ...DEFAULT_SORT }
+    for (const key of Object.keys(result) as SessionStatus[]) {
+      if (valid.has(raw[key] as SortKey)) result[key] = raw[key] as SortKey
+    }
+    return result
+  } catch {
+    return { ...DEFAULT_SORT }
+  }
+}
 
 const COLUMNS: Array<{ id: SessionStatus; title: string }> = [
   { id: 'running', title: '실행중' },
@@ -18,6 +37,17 @@ export default function App() {
   const metrics = useSystemMetrics()
   const now = useNow(1000)
   const [showHidden, setShowHidden] = useState(false)
+  const [sort, setSort] = useState<Record<SessionStatus, SortKey>>(loadSort)
+
+  const setColumnSort = (column: SessionStatus, key: SortKey): void => {
+    const next = { ...sort, [column]: key }
+    setSort(next)
+    try {
+      localStorage.setItem(SORT_STORAGE_KEY, JSON.stringify(next))
+    } catch {
+      // 저장 실패해도 이번 세션 동안은 동작
+    }
+  }
 
   const visible = cards.filter((c) => !c.dismissed)
   const hiddenCount = cards.length - visible.length
@@ -43,11 +73,23 @@ export default function App() {
       </header>
       <main className="columns">
         {COLUMNS.map((col) => {
-          const list = orderColumn(boardCards, col.id)
+          const list = orderColumn(boardCards, col.id, sort[col.id])
           return (
             <section key={col.id} className={`column column-${col.id}`}>
               <h2>
                 {col.title} <span className="count num">{list.length}</span>
+                <select
+                  className="sort-select"
+                  value={sort[col.id]}
+                  onChange={(e) => setColumnSort(col.id, e.target.value as SortKey)}
+                  title="정렬 기준"
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </h2>
               <div className="column-cards">
                 {list.map((card) => (
