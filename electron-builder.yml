@@ -1,0 +1,16 @@
+appId: com.juunghyun.ccdeck
+productName: ccdeck
+directories:
+  output: dist
+files:
+  - out/**
+  - package.json
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+  # 개인 배포 전 단계 — Developer ID 서명/공증 없이 로컬 ad-hoc 서명으로 빌드
+  identity: null
+dmg:
+  title: ccdeck
+npmRebuild: false

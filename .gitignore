@@ -1,0 +1,9 @@
+node_modules/
+out/
+dist/
+*.log
+.DS_Store
+
+# 런타임 데이터 (아카이브 DB, 캐시 등) — 실세션 정보가 담기므로 절대 커밋 금지
+/data/
+*.local

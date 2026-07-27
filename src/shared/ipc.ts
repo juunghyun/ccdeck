@@ -1,0 +1,4 @@
+export const SESSIONS_LIST = 'ccdeck:sessions:list'
+export const SESSIONS_UPDATE = 'ccdeck:sessions:update'
+export const METRICS_GET = 'ccdeck:metrics:get'
+export const METRICS_UPDATE = 'ccdeck:metrics:update'

@@ -1,0 +1,63 @@
+/*
+ * 디자인 토큰 — 이정현 개인 디자인시스템 v1.0 기반
+ * (모던 프로덕트 톤, 코발트 블루, 라이트 온리, Slate 중립)
+ * 원본: ~/.claude/skills/design-system/tokens.css — 값 변경은 원본에서 먼저.
+ * 컴포넌트 CSS는 반드시 이 변수만 참조할 것.
+ */
+:root {
+  /* Brand: Cobalt Blue ramp */
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-300: #93c5fd;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+
+  /* Neutral: Slate ramp */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-900: #0f172a;
+
+  /* Semantic — 아이콘/라벨 동반 필수, 색 단독 전달 금지 */
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --warning: #b45309;
+  --warning-bg: #fffbeb;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+
+  /* Aliases */
+  --brand: var(--blue-600);
+  --brand-dark: var(--blue-800);
+  --brand-soft: var(--blue-50);
+  --text: var(--slate-900);
+  --text-2: var(--slate-600);
+  --text-3: var(--slate-400);
+  --bg: #ffffff;
+  --bg-soft: var(--slate-50);
+  --border: var(--slate-200);
+
+  /* Typography */
+  --font-sans: 'Wanted Sans Variable', 'Wanted Sans', Pretendard, 'Apple SD Gothic Neo',
+    'Noto Sans KR', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Shape */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.05);
+  --shadow: 0 1px 3px rgb(15 23 42 / 0.06), 0 4px 12px rgb(15 23 42 / 0.05);
+
+  /* 앱 상태색 — 시맨틱 재사용 (카드에는 항상 텍스트 라벨 동반) */
+  --status-running: var(--brand);
+  --status-running-bg: var(--brand-soft);
+  --status-attention: var(--warning);
+  --status-attention-bg: var(--warning-bg);
+  --status-done: var(--success);
+  --status-done-bg: var(--success-bg);
+}
