@@ -9,6 +9,7 @@ declare global {
       onSessionsUpdate(callback: (cards: SessionCardData[]) => void): () => void
       getSystemMetrics(): Promise<SystemMetrics | null>
       onSystemMetricsUpdate(callback: (metrics: SystemMetrics) => void): () => void
+      killSession(pid: number, label: string): Promise<{ killed: boolean; reason?: string }>
     }
   }
 }

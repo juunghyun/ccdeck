@@ -28,6 +28,20 @@ export function SessionCard({ card, now }: { card: SessionCardData; now: number 
             {card.gitBranch}
           </span>
         )}
+        {card.process && (
+          <button
+            className="kill-btn"
+            title="claude 프로세스 종료 (확인 후 진행)"
+            onClick={() =>
+              void window.ccdeck.killSession(
+                card.process!.pid,
+                `${card.projectName} — ${card.title ?? card.firstPrompt ?? card.sessionId.slice(0, 8)}`
+              )
+            }
+          >
+            종료
+          </button>
+        )}
       </div>
 
       <h3 className="card-title" title={card.firstPrompt ?? undefined}>

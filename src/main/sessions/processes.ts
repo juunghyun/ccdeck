@@ -61,6 +61,12 @@ export async function listClaudeProcesses(): Promise<ClaudeProcess[]> {
   return procs
 }
 
+/** kill 직전 재검증 — pid 재사용으로 엉뚱한 프로세스를 죽이지 않도록 */
+export async function isClaudePid(pid: number): Promise<boolean> {
+  const procs = await listClaudeProcesses()
+  return procs.some((p) => p.pid === pid)
+}
+
 /** ps etime 포맷 [[dd-]hh:]mm:ss 파싱 */
 export function parseEtime(value: string): number {
   const m = value.match(/^(?:(\d+)-)?(?:(\d+):)?(\d+):(\d+)$/)

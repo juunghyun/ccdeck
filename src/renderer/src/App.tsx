@@ -45,7 +45,7 @@ export default function App() {
           )
         })}
       </main>
-      <StatusBar metrics={metrics} />
+      <StatusBar metrics={metrics} cards={cards} now={now} />
     </div>
   )
 }

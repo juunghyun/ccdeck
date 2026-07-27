@@ -160,6 +160,26 @@ body {
   white-space: nowrap;
 }
 
+.kill-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+}
+
+.kill-btn:hover {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
 .card-title {
   font-size: 14px;
   font-weight: 600;
@@ -321,6 +341,12 @@ body {
   height: 12px;
   background: var(--border);
   flex-shrink: 0;
+}
+
+.status-bar .reclaim-hint {
+  margin-left: auto;
+  color: var(--warning);
+  font-weight: 600;
 }
 
 /* 시맨틱 색은 라벨 텍스트('메모리 NN%')와 함께만 사용 */

@@ -1,5 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { METRICS_GET, METRICS_UPDATE, SESSIONS_LIST, SESSIONS_UPDATE } from '../shared/ipc'
+import {
+  METRICS_GET,
+  METRICS_UPDATE,
+  SESSIONS_LIST,
+  SESSIONS_UPDATE,
+  SESSION_KILL
+} from '../shared/ipc'
 
 function subscribe(channel: string, callback: (payload: unknown) => void): () => void {
   const listener = (_event: unknown, payload: unknown): void => callback(payload)
@@ -15,5 +21,6 @@ contextBridge.exposeInMainWorld('ccdeck', {
   onSessionsUpdate: (callback: (cards: unknown) => void) => subscribe(SESSIONS_UPDATE, callback),
   getSystemMetrics: () => ipcRenderer.invoke(METRICS_GET),
   onSystemMetricsUpdate: (callback: (metrics: unknown) => void) =>
-    subscribe(METRICS_UPDATE, callback)
+    subscribe(METRICS_UPDATE, callback),
+  killSession: (pid: number, label: string) => ipcRenderer.invoke(SESSION_KILL, { pid, label })
 })

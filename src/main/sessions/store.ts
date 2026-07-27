@@ -65,6 +65,12 @@ export class SessionStore extends EventEmitter {
     return buildCards(sources, this.procs, now)
   }
 
+  /** kill 등 외부 변화 직후 프로세스 목록 즉시 재수집 */
+  async refreshProcesses(): Promise<void> {
+    this.procs = await listClaudeProcesses()
+    this.scheduleEmit()
+  }
+
   claudeTotals(): { count: number; rssBytes: number } {
     return {
       count: this.procs.length,
