@@ -1,6 +1,12 @@
 import type { AttentionReason, SessionCardData } from '../../../shared/types'
 import { formatDuration, formatRss, formatTokens, shortModel, timeAgo } from '../format'
 
+function contextTone(percent: number): 'ok' | 'warn' | 'danger' {
+  if (percent >= 90) return 'danger'
+  if (percent >= 75) return 'warn'
+  return 'ok'
+}
+
 const REASON_LABEL: Record<AttentionReason, string> = {
   question: '질문 대기',
   'turn-ended': '턴 종료 — 확인 필요',
@@ -47,6 +53,15 @@ export function SessionCard({ card, now }: { card: SessionCardData; now: number 
           </span>
         )}
       </div>
+
+      {card.context && (
+        <div className={`context-gauge tone-${contextTone(card.context.percent)}`}>
+          <span className="context-label num">컨텍스트 {Math.round(card.context.percent)}%</span>
+          <span className="context-track">
+            <span className="context-fill" style={{ width: `${card.context.percent}%` }} />
+          </span>
+        </div>
+      )}
 
       {card.lastAssistantText && <p className="card-snippet">{card.lastAssistantText}</p>}
 

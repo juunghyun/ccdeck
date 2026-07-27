@@ -1,5 +1,10 @@
 import path from 'node:path'
-import type { AttentionReason, SessionCardData, SessionStatus } from '../../shared/types'
+import {
+  CONTEXT_WINDOW_TOKENS,
+  type AttentionReason,
+  type SessionCardData,
+  type SessionStatus
+} from '../../shared/types'
 import { SUBAGENT_TOOLS, type TranscriptSnapshot } from './transcript'
 import type { ClaudeProcess } from './processes'
 
@@ -106,6 +111,13 @@ function toCard(
     turnStartedAt: snap.turnOpen ? snap.turnStartedAt : null,
     lastActivityAt,
     tokens: snap.tokens,
+    context:
+      snap.lastContextTokens !== null
+        ? {
+            tokens: snap.lastContextTokens,
+            percent: Math.min(100, (snap.lastContextTokens / CONTEXT_WINDOW_TOKENS) * 100)
+          }
+        : null,
     subagents: {
       active: subagents.length,
       names: subagents.map((t) => t.description ?? t.name)

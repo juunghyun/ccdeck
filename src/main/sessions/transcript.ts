@@ -23,6 +23,8 @@ export interface TranscriptSnapshot {
   lastActivityAt: number | null
   turnOpen: boolean
   tokens: TokenTotals
+  /** 메인 체인 마지막 API 호출의 프롬프트+출력 토큰 ≈ 현재 컨텍스트 크기 */
+  lastContextTokens: number | null
   pendingToolUses: PendingToolUse[]
 }
 
@@ -55,6 +57,7 @@ export class TranscriptAccumulator {
   private lastActivityAt: number | null = null
   private turnOpen = false
   private tokens: TokenTotals = { input: 0, output: 0, cacheRead: 0, cacheCreation: 0 }
+  private lastContextTokens: number | null = null
   private pending = new Map<string, PendingToolUse>()
   private seenUsageIds = new Set<string>()
 
@@ -72,6 +75,7 @@ export class TranscriptAccumulator {
     this.lastActivityAt = null
     this.turnOpen = false
     this.tokens = { input: 0, output: 0, cacheRead: 0, cacheCreation: 0 }
+    this.lastContextTokens = null
     this.pending.clear()
     this.seenUsageIds.clear()
   }
@@ -129,6 +133,7 @@ export class TranscriptAccumulator {
       lastActivityAt: this.lastActivityAt,
       turnOpen: this.turnOpen,
       tokens: { ...this.tokens },
+      lastContextTokens: this.lastContextTokens,
       pendingToolUses: [...this.pending.values()]
     }
   }
@@ -200,10 +205,18 @@ export class TranscriptAccumulator {
       this.tokens.cacheCreation += asNumber(usage.cache_creation_input_tokens)
     }
 
-    // 서브에이전트(sidechain) 대화는 토큰만 집계
+    // 서브에이전트(sidechain) 대화는 토큰만 집계 — 컨텍스트는 메인 체인 것만
     if (entry.isSidechain === true) return
     this.trackLocation(entry)
     if (typeof msg.model === 'string') this.model = msg.model
+    if (usage) {
+      // 같은 메시지의 반복 라인은 같은 값이라 덮어써도 무해
+      this.lastContextTokens =
+        asNumber(usage.input_tokens) +
+        asNumber(usage.cache_read_input_tokens) +
+        asNumber(usage.cache_creation_input_tokens) +
+        asNumber(usage.output_tokens)
+    }
 
     if (Array.isArray(msg.content)) {
       for (const block of msg.content as Array<Record<string, unknown>>) {

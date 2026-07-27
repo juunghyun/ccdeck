@@ -20,6 +20,7 @@ function snap(overrides: Partial<TranscriptSnapshot> = {}): TranscriptSnapshot {
     lastActivityAt: NOW - 60_000,
     turnOpen: false,
     tokens: { input: 10, output: 500, cacheRead: 2000, cacheCreation: 100 },
+    lastContextTokens: 60_000,
     pendingToolUses: [],
     ...overrides
   }
@@ -95,6 +96,18 @@ describe('buildCards', () => {
       { filePath: '/f/empty.jsonl', snap: snap({ firstPrompt: null, title: null, lastAssistantText: null }) }
     ]
     expect(buildCards(sources, [], NOW)).toEqual([])
+  })
+
+  it('컨텍스트 게이지 percent를 계산한다 (60k/200k = 30%)', () => {
+    const sources = [{ filePath: '/f/a.jsonl', snap: snap() }]
+    const cards = buildCards(sources, [proc()], NOW)
+    expect(cards[0].context).toEqual({ tokens: 60_000, percent: 30 })
+  })
+
+  it('usage를 본 적 없는 세션은 context가 null', () => {
+    const sources = [{ filePath: '/f/a.jsonl', snap: snap({ lastContextTokens: null }) }]
+    const cards = buildCards(sources, [proc()], NOW)
+    expect(cards[0].context).toBeNull()
   })
 
   it('gitBranch HEAD는 브랜치 없음으로 처리한다', () => {

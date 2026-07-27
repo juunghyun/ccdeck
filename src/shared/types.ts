@@ -14,6 +14,14 @@ export interface SubagentInfo {
   names: string[]
 }
 
+/** Claude 모델 컨텍스트 윈도우 (토큰) — 게이지 분모 */
+export const CONTEXT_WINDOW_TOKENS = 200_000
+
+export interface ContextInfo {
+  tokens: number
+  percent: number
+}
+
 export interface ProcessInfo {
   pid: number
   rssBytes: number
@@ -56,6 +64,7 @@ export interface SessionCardData {
   turnStartedAt: number | null
   lastActivityAt: number
   tokens: TokenTotals
+  context: ContextInfo | null
   subagents: SubagentInfo
   process: ProcessInfo | null
 }

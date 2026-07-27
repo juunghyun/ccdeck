@@ -211,6 +211,53 @@ body {
   color: var(--blue-700);
 }
 
+/* ---- Context gauge (컴팩션 임박도) ---- */
+.context-gauge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.context-label {
+  font-size: 11px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.context-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--slate-100);
+  overflow: hidden;
+}
+
+.context-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--brand);
+}
+
+.context-gauge.tone-warn .context-fill {
+  background: var(--warning);
+}
+
+.context-gauge.tone-warn .context-label {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.context-gauge.tone-danger .context-fill {
+  background: var(--danger);
+}
+
+.context-gauge.tone-danger .context-label {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 .card-snippet {
   font-size: 12px;
   color: var(--text-2);

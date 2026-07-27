@@ -171,6 +171,40 @@ describe('TranscriptAccumulator', () => {
     expect(snap.pendingToolUses).toEqual([])
   })
 
+  it('마지막 메인 체인 usage로 현재 컨텍스트 크기를 추정한다', () => {
+    const acc = feed([
+      assistantLine('2026-01-01T00:00:10.000Z', { id: 'msg_a' }),
+      assistantLine('2026-01-01T00:00:20.000Z', {
+        id: 'msg_b',
+        usage: {
+          input_tokens: 10,
+          output_tokens: 200,
+          cache_read_input_tokens: 50_000,
+          cache_creation_input_tokens: 3_000
+        }
+      })
+    ])
+    expect(acc.snapshot().lastContextTokens).toBe(10 + 200 + 50_000 + 3_000)
+  })
+
+  it('sidechain usage는 컨텍스트 추정에 반영하지 않는다', () => {
+    const acc = feed([
+      assistantLine('2026-01-01T00:00:10.000Z', { id: 'msg_main' }),
+      assistantLine('2026-01-01T00:00:20.000Z', {
+        id: 'msg_side',
+        usage: {
+          input_tokens: 1,
+          output_tokens: 1,
+          cache_read_input_tokens: 1,
+          cache_creation_input_tokens: 1
+        },
+        extra: { isSidechain: true }
+      })
+    ])
+    // 메인 체인 msg_main의 기본 USAGE 합 유지 (5 + 100 + 1000 + 50)
+    expect(acc.snapshot().lastContextTokens).toBe(1155)
+  })
+
   it('sidechain(서브에이전트) 대화는 토큰만 집계하고 턴 상태는 건드리지 않는다', () => {
     const acc = feed([
       userLine('2026-01-01T00:00:00.000Z', '메인 작업'),
